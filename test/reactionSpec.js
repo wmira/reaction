@@ -94,5 +94,16 @@ describe('createStore', () => {
 
         should(called).be.exactly(true);
     });
+    it.only('store passes a setState', () => {
+        const increment = function() {
+            return function(setState) {
+                setState({ok: 1});
+            };
+        };
 
+        const store = createStore([
+            createStoreActions([increment]),
+        ]);
+        store.actions.increment();
+    });
 });

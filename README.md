@@ -80,7 +80,7 @@ Function that can be used to subscribe which is called whenever the state change
 
 ```console
 
-npm run Testing
+npm run test
 
 ```
 

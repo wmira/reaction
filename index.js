@@ -87,13 +87,13 @@ const createStore = function( stores , remote ) {
                 const newState = storeAction.call(null, actionParam, stateArg, state );
                 if ( newState ) {
                     if ( typeof newState === 'function' ) {
-                        const setState = (theNewState) => {
+                        newState(function(theNewState) {
                             if ( theNewState ) {
-                                state = freeze({...state, ...(store.name ? { [store.name]: newState } : newState) });
+                                state = freeze({...state, ...(store.name ? { [store.name]: theNewState } : theNewState) });
                                 dispatchStateChange(listeners, store.name, state[store.name]);
                             }
-                        };
-                        newState(setState, remote);
+                        });
+
                     } else {
                         state = freeze({ ...state, ...(store.name ? { [store.name]: newState } : newState) });
                         dispatchStateChange(listeners, store.name, state[store.name]);
