@@ -75,3 +75,11 @@ store, the store.actions.increment is available that can be used by clients to c
 3. store.subscribe
 
 Function that can be used to subscribe which is called whenever the state changes.
+
+# Testing
+
+```console
+
+npm run Testing
+
+```
