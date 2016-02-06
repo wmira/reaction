@@ -53,8 +53,7 @@ const dispatchStateChange = function(listeners, store, state ) {
 /**
  * contains the top level state for a given app
  */
-const createStore = function( stores , remote ) {
-
+const createStore = function( stores ) {
     let state = {}; //top level
     let actions = {};
     let listeners = {
@@ -67,13 +66,13 @@ const createStore = function( stores , remote ) {
         }
         if ( store.name ) {
             state[store.name] = freeze(store.state || {});
+
         } else {
             state = assign({}, store.state);
         }
         listeners[store.name] = [];
     });
     state = freeze(state);
-
      //now create action handlers
     stores.forEach( store => {
         var actionMountPoint = store.name ? actions[store.name] = {} : actions;
@@ -89,13 +88,15 @@ const createStore = function( stores , remote ) {
                     if ( typeof newState === 'function' ) {
                         newState(function(theNewState) {
                             if ( theNewState ) {
-                                state = freeze({...state, ...(store.name ? { [store.name]: theNewState } : theNewState) });
+                                state = freeze({...state, ...(store.name ? { [store.name]: { ...state[store.name], ...theNewState }} : theNewState) });
                                 dispatchStateChange(listeners, store.name, state[store.name]);
                             }
                         });
 
                     } else {
-                        state = freeze({ ...state, ...(store.name ? { [store.name]: newState } : newState) });
+
+                        state = freeze({ ...state, ...(store.name ? { [store.name]: { ...state[store.name], ...newState }} : newState) });
+
                         dispatchStateChange(listeners, store.name, state[store.name]);
                     }
                 }
