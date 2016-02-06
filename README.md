@@ -83,3 +83,7 @@ Function that can be used to subscribe which is called whenever the state change
 npm run Testing
 
 ```
+
+# License
+
+MIT
