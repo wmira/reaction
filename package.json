@@ -4,7 +4,7 @@
   "description": "Basic State Library",
   "main": "index.js",
   "scripts": {
-    "dist": "babel index.js --out-dir dist/ && cp README.md dist/",
+    "dist": "babel index.js --out-dir dist/ && cp README.md dist/ && cp package.json dist/",
     "test": "mocha --compilers js:babel-register --recursive -w"
   },
   "keywords": [
