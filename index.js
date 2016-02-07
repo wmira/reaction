@@ -1,5 +1,5 @@
 
-const { freeze, keys, assign } = Object;
+const { freeze, keys, assign, defineProperty } = Object;
 
 /**
  * Create a store with a given name and the given initial state
@@ -32,6 +32,21 @@ const createStoreActions = function( arg1, arg2, arg3 ) {
 };
 const __ROOT__ = '__ROOT__';
 
+const setStateAdapter = function(f, name) {
+    const nameToUse = name || f.name;
+    const adapted = function() {
+        const args = Array.from(arguments);        
+        return function(setState) {
+            try {
+                f(setState, ...args);
+            } catch ( e ) {
+                console.err('error executing nameToUse ', e);
+            }
+        };
+    };
+    defineProperty(adapted, 'name', {value: nameToUse} );
+    return adapted;
+};
 
 const dispatchStateChange = function(listeners, store, state ) {
     //FIXME, some listeners are different
@@ -47,7 +62,6 @@ const dispatchStateChange = function(listeners, store, state ) {
                 }
             });
         });
-
 };
 
 /**
@@ -83,7 +97,12 @@ const createStore = function( stores ) {
                 const stateArg = store.name ? state[store.name] : state;
                 const args = Array.from(arguments);
                 const actionParam = args.length === 0 ? {} : args[0]; //if first arg is empty or no args, we will create an empty one
-                const newState = storeAction.call(null, actionParam, stateArg, state );
+                let newState = undefined;
+                try {
+                    newState = storeAction(actionParam, stateArg, state );
+                } catch ( e ) {
+                    console.log('error executing ' + storeAction.name, e);
+                }
                 if ( newState ) {
                     if ( typeof newState === 'function' ) {
                         newState(function(theNewState) {
@@ -126,4 +145,4 @@ const createStore = function( stores ) {
 
 
 
-module.exports = { createStore, createStoreActions };
+module.exports = { createStore, createStoreActions, setStateAdapter };
